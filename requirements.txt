@@ -1,0 +1,5 @@
+gradio
+rank_bm25
+fastembed
+numpy
+requests
