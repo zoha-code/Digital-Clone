@@ -54,7 +54,9 @@ def available_models(key):
 # 1. Load and chunk (keeps source file name and chunk id)
 def load_chunks():
     chunks = []
-    for path in sorted(glob.glob("data/*.md") + glob.glob("data/*.txt")):
+    paths = glob.glob("data/*.md") + glob.glob("data/*.txt") + glob.glob("*.md") + glob.glob("*.txt")
+    paths = [p for p in paths if os.path.basename(p).lower() not in ("readme.md", "requirements.txt")]
+    for path in sorted(set(paths)):
         words = open(path, encoding="utf-8").read().split()
         step = CHUNK_WORDS - OVERLAP
         for i, start in enumerate(range(0, max(len(words), 1), step)):
