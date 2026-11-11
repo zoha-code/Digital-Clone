@@ -1,14 +1,9 @@
----
-title: Zoha Shafique Digital Clone
-emoji: 🤖
-colorFrom: blue
-colorTo: purple
-sdk: gradio
-app_file: app.py
-pinned: false
----
-
 # Zoha Shafique: Digital Clone (Hybrid RAG)
+
+**Live demo:** https://digital-clone-production-bee7bcec.up.railway.app
+**Code:** https://github.com/zoha-code/Digital-Clone
+
+*Deployment note:* Hugging Face now requires a paid plan to create Gradio Spaces, so on my teacher's suggestion the app is deployed on Railway instead (free trial). The app is the same Gradio app. If the page is slow to open the first time, wait about a minute and refresh.
 
 **This is an AI clone, not the real person.** Ask it questions about Zoha Shafique. It retrieves passages from her own documents using BM25, dense embeddings, or both combined (hybrid), and answers in the first person using only those passages.
 
@@ -16,9 +11,9 @@ pinned: false
 
 1. **Chunking:** each document is split into overlapping chunks of about 250 words (40 words overlap). The source file name and chunk ID are stored with every chunk.
 2. **BM25:** `rank_bm25` over tokenized chunks.
-3. **Dense:** `all-MiniLM-L6-v2` sentence embeddings, cosine similarity with numpy, embeddings precomputed and saved in `embeddings.npy`. No vector database.
+3. **Dense:** `all-MiniLM-L6-v2` sentence embeddings, cosine similarity with numpy, embeddings precomputed and saved in `embeddings.npy`. No vector database. (On the small server the query is embedded with the same model through fastembed/ONNX to save memory.)
 4. **Hybrid:** Reciprocal Rank Fusion, `score = sum of 1 / (60 + rank)` over the BM25 and dense top 20 lists. (The other common option is a weighted score `alpha * dense + (1 - alpha) * bm25` after min-max normalizing each score. I did not use it.)
-5. **Generation:** the top 4 chunks and the question go to a free Llama model on Groq. The prompt makes it answer in the first person, only from the context, and say "I don't have that in my notes." when the answer is missing. The API key is stored as a Space secret (`GROQ_API_KEY`), never in the code.
+5. **Generation:** the top 4 chunks and the question go to a free Llama model on Groq. The prompt makes it answer in the first person, only from the context, and say "I don't have that in my notes." when the answer is missing. The API key is stored as an environment variable on the hosting platform (`GROQ_API_KEY`), never in the code or the repository.
 6. **UI:** Gradio app with a question box, answer box, mode selector (BM25 only, Dense only, Hybrid), and a panel with the retrieved chunks, sources and scores.
 
 ## Knowledge base
